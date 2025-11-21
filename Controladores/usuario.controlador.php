@@ -1,0 +1,115 @@
+<?php
+session_start();
+require_once "Modelos/Usuario.php";
+
+class UsuarioControlador {
+
+    private $modelo;
+
+    public function __construct() {
+        $this->modelo = new Usuario();
+    }
+
+    // Mostrar formulario de login
+    public function Login() {
+        // Vista independiente (sin encabezado/sidebars)
+        require_once "Vistas/Usuario/Login.php";
+        require_once "Vistas/Pie.php";
+    }
+
+    // Procesar POST de login
+    public function Entrar() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?c=usuario&a=Login');
+            exit;
+        }
+
+        $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+        $password = isset($_POST['password']) ? $_POST['password'] : '';
+
+        $user = $this->modelo->VerificarLogin($email, $password);
+        if ($user) {
+            // Setear variables de sesión (asegúrate de regenerar id si es necesario)
+            $_SESSION['id_usuario'] = $user->id_usuario;
+            $_SESSION['nombre'] = $user->nombre;
+            $_SESSION['email'] = $user->email;
+            $_SESSION['fecha_registro'] = $user->fecha_registro ?? null;$_SESSION['fecha_registro'] = $user->fecha_registro ?? null;
+            // redirigir al index raíz (mostrará Inicio)
+            header('Location: index.php');
+            exit;
+        } else {
+            // login fallido
+            header('Location: index.php?c=usuario&a=Login&error=1');
+            exit;
+        }
+    }
+
+    // Logout
+    public function Logout() {
+        // destruir sesión
+        $_SESSION = [];
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+            );
+        }
+        session_destroy();
+        header('Location: index.php?c=usuario&a=Login');
+        exit;
+    }
+
+    // Mostrar formulario de registro
+    public function Registro() {
+        require_once "Vistas/Usuario/Registro.php";
+        require_once "Vistas/Pie.php";
+    }
+
+    // Procesar POST de registro
+    public function Registrar() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?c=usuario&a=Registro');
+            exit;
+        }
+
+        $nombre = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
+        $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+        $password = isset($_POST['password']) ? $_POST['password'] : '';
+        $password2 = isset($_POST['password2']) ? $_POST['password2'] : '';
+
+        // validaciones básicas
+        if (empty($nombre) || empty($email) || empty($password)) {
+            header('Location: index.php?c=usuario&a=Registro&error=1');
+            exit;
+        }
+        if ($password !== $password2) {
+            header('Location: index.php?c=usuario&a=Registro&error=2');
+            exit;
+        }
+
+        // evitar duplicados
+        $exists = $this->modelo->ObtenerPorEmail($email);
+        if ($exists) {
+            header('Location: index.php?c=usuario&a=Registro&error=3');
+            exit;
+        }
+
+        $data = [
+            'nombre' => $nombre,
+            'email' => $email,
+            'password' => $password,
+            'estado' => 'ACTIVO'
+        ];
+
+        $id = $this->modelo->Registrar($data);
+        if ($id) {
+            // redirigir al login con success
+            header('Location: index.php?c=usuario&a=Login&registered=1');
+            exit;
+        } else {
+            header('Location: index.php?c=usuario&a=Registro&error=4');
+            exit;
+        }
+    }
+}
