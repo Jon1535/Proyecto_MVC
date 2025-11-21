@@ -1,0 +1,7 @@
+/vendor/
+/Assets/images/uploads/
+/composer.phar
+/.phpunit.result.cache
+/.idea/
+/node_modules/
+/.env
