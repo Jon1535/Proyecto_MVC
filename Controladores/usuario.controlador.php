@@ -1,13 +1,12 @@
 <?php
 session_start();
-require_once "Modelos/Usuario.php";
 
 class UsuarioControlador {
 
     private $modelo;
 
     public function __construct() {
-        $this->modelo = new Usuario();
+        $this->modelo = new \Modelos\Usuario();
     }
 
     // Mostrar formulario de login

@@ -4,6 +4,9 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+// Cargar el autoloader de Composer para aprovechar PSR-4 y namespaces
+require_once __DIR__ . '/vendor/autoload.php';
+
 //var_dump($_GET['controlador']);  
 
 /*
@@ -15,7 +18,7 @@ if(!isset($_GET['c'])){ //No existe
 */
 
 
-require_once "Modelos/Basededatos.php"; //Incluir el archivo de la base de datos
+// Las clases `Modelos\` se cargan automáticamente vía Composer/PSR-4
 
 if(!isset($_GET['c'])){ //No existe
     //isset — Determina si una variable está definida y no es NULL

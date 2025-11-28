@@ -1,12 +1,9 @@
 <?php
-require_once "Modelos/Libro.php";
-
-
 class InicioControlador {
     private $modelo;
 
     public function __CONSTRUCT()  {
-        $this->modelo = new Libro(); //Instancia del modelo Libro
+        $this->modelo = new \Modelos\Libro(); //Instancia del modelo Libro (namespaced)
     }    
     public function Inicio() {
 

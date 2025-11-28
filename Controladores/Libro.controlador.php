@@ -2,7 +2,6 @@
 
 session_start();
 
-require_once "Modelos/Libro.php";
 
 /**
  * ESQUEMA DE CÓDIGOS DE RESULTADO UNIFICADO
@@ -37,7 +36,7 @@ class LibroControlador {
     private $modelo;
 
     public function __construct() {
-        $this->modelo = new Libro;
+        $this->modelo = new \Modelos\Libro;
     }
     
     public function Inicio() {
@@ -265,7 +264,7 @@ class LibroControlador {
         }
 
         // Crear objeto Libro y setear propiedades
-        $libro = new Libro();
+        $libro = new \Modelos\Libro();
         if ($id_libro > 0) {
             $libro->setId($id_libro);
         }

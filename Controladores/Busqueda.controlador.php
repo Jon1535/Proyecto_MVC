@@ -2,14 +2,13 @@
 
 session_start();
 
-require_once "Modelos/Libro.php";
 
 class BusquedaControlador {
 
     private $modelo;
 
     public function __construct() {
-        $this->modelo = new Libro;
+        $this->modelo = new \Modelos\Libro;
     }
 
     /**
