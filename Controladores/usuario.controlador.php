@@ -111,4 +111,91 @@ class UsuarioControlador {
             exit;
         }
     }
+
+    // Página principal del perfil de usuario (requiere sesión)
+    public function Perfil() {
+        if (!isset($_SESSION['id_usuario'])) {
+            header('Location: index.php?c=usuario&a=Login');
+            exit;
+        }
+        // Datos básicos del usuario desde la sesión
+        $usuario = (object) [
+            'id_usuario' => $_SESSION['id_usuario'] ?? null,
+            'nombre' => $_SESSION['nombre'] ?? '',
+            'email' => $_SESSION['email'] ?? '',
+            'fecha_registro' => $_SESSION['fecha_registro'] ?? null,
+        ];
+        require_once "Vistas/Encabezado.php";
+        require_once "Vistas/Usuario/Perfil.php";
+        require_once "Vistas/Pie.php";
+    }
+
+    // Mostrar formulario de edición de perfil
+    public function Editar() {
+        if (!isset($_SESSION['id_usuario'])) {
+            header('Location: index.php?c=usuario&a=Login');
+            exit;
+        }
+        $usuario = (object) [
+            'id_usuario' => $_SESSION['id_usuario'] ?? null,
+            'nombre' => $_SESSION['nombre'] ?? '',
+            'email' => $_SESSION['email'] ?? '',
+        ];
+        require_once "Vistas/Encabezado.php";
+        require_once "Vistas/Usuario/EditarPerfil.php";
+        require_once "Vistas/Pie.php";
+    }
+
+    // Procesar actualización de perfil
+    public function ActualizarPerfil() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_SESSION['id_usuario'])) {
+            header('Location: index.php?c=usuario&a=Perfil&error=1'); // acceso inválido
+            exit;
+        }
+
+        $nombre = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
+        $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+        $password = isset($_POST['password']) ? $_POST['password'] : '';
+        $password2 = isset($_POST['password2']) ? $_POST['password2'] : '';
+
+        // Validaciones básicas
+        if ($nombre === '' || $email === '') {
+            header('Location: index.php?c=usuario&a=Editar&error=2'); // faltan campos
+            exit;
+        }
+        if ($password !== '' && $password !== $password2) {
+            header('Location: index.php?c=usuario&a=Editar&error=3'); // pass no coincide
+            exit;
+        }
+
+        // Verificar duplicado de email si cambió
+        $emailActual = $_SESSION['email'] ?? '';
+        if ($email !== $emailActual) {
+            $existe = $this->modelo->ObtenerPorEmail($email);
+            if ($existe && $existe->id_usuario != $_SESSION['id_usuario']) {
+                header('Location: index.php?c=usuario&a=Editar&error=4'); // email duplicado
+                exit;
+            }
+        }
+
+        $data = [
+            'nombre' => $nombre,
+            'email' => $email,
+        ];
+        if ($password !== '') {
+            $data['password'] = $password;
+        }
+
+        $ok = $this->modelo->Actualizar($_SESSION['id_usuario'], $data);
+        if ($ok) {
+            // Actualizar sesión para reflejar cambios
+            $_SESSION['nombre'] = $nombre;
+            $_SESSION['email'] = $email;
+            header('Location: index.php?c=usuario&a=Perfil&success=1');
+            exit;
+        } else {
+            header('Location: index.php?c=usuario&a=Editar&error=5'); // fallo update
+            exit;
+        }
+    }
 }

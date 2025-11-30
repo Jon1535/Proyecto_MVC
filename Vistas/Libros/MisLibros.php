@@ -10,7 +10,7 @@
               <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Usuario" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
             </div>
             <h5 class="fw-bold mb-1"><?php echo isset($_SESSION['nombre']) ? htmlspecialchars($_SESSION['nombre']) : 'Usuario'; ?></h5>
-            <p class="text-muted small mb-3"><?php echo isset($_SESSION['fecha_registro']) ? 'Miembro desde: '.date('Y', strtotime($_SESSION['fecha_registro'])) : 'Miembro desde: -'; ?></p>
+            <p class="text-muted small mb-3"><?php echo isset($_SESSION['fecha_registro']) ? 'Miembro desde: '.date('d/m/Y', strtotime($_SESSION['fecha_registro'])) : 'Miembro desde: -'; ?></p>
             
             <div class="d-grid gap-2">
               <a href="index.php?c=usuario&a=Editar" class="btn btn-outline-primary btn-sm">
@@ -31,6 +31,13 @@
         <div class="card shadow-sm mb-4">
           <div class="card-body p-4">
             <h4 class="fw-bold text-primary mb-2">📚 Biblioteca</h4>
+            <?php if (isset($_GET['error']) && $_GET['error'] === 'estado_no_disponible'): ?>
+              <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                El libro seleccionado no está disponible para intercambio.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            <?php endif; ?>
             <?php 
             $buscar = isset($_GET['buscar']) ? trim($_GET['buscar']) : '';
             if (!empty($buscar)): 
@@ -44,17 +51,30 @@
 
         <!-- 📚 Biblioteca -->
         <div class="card shadow-sm p-4">
-          <?php if (empty($biblioteca)): ?>
+          <?php 
+            // Ocultar libros propios para evitar intercambiar con uno mismo
+            $userId = $_SESSION['id_usuario'] ?? null;
+            $bibliotecaFiltrada = [];
+            if (!empty($biblioteca)) {
+              foreach ($biblioteca as $item) {
+                if ($userId && isset($item->id_propietario) && (int)$item->id_propietario === (int)$userId) {
+                  continue; // skip propios
+                }
+                $bibliotecaFiltrada[] = $item;
+              }
+            }
+          ?>
+          <?php if (empty($bibliotecaFiltrada)): ?>
             <div class="alert alert-info">
               <?php if (!empty($buscar)): ?>
                 No se encontraron resultados para "<strong><?= htmlspecialchars($buscar) ?></strong>". <a href="?c=Libro&a=MisLibros">Ver toda la biblioteca</a>
               <?php else: ?>
-                La biblioteca está vacía.
+                No hay libros disponibles de otros usuarios por ahora.
               <?php endif; ?>
             </div>
           <?php else: ?>
             <div class="row g-3">
-              <?php foreach ($biblioteca as $libro): ?>
+              <?php foreach ($bibliotecaFiltrada as $libro): ?>
                 <div class="col-sm-6 col-lg-6">
                   <div class="card h-100 shadow-sm">
                     <div class="card-img-top-container" style="height: 250px; overflow: hidden; background-color: #f0f0f0; display: flex; align-items: center; justify-content: center;">
@@ -92,9 +112,16 @@
 
                       <!-- Botón de acción -->
                       <div class="d-grid mt-3">
-                        <a href="?c=Intercambio&a=Solicitar&id=<?= htmlspecialchars($libro->id_libro) ?>" class="btn btn-success btn-sm">
-                          <i class="bi bi-arrow-left-right me-2"></i> Intercambiar
-                        </a>
+                        <?php $estadoLibro = strtoupper(trim($libro->estado ?? 'PUBLICADO')); ?>
+                        <?php if ($estadoLibro === 'PUBLICADO'): ?>
+                          <a href="?c=Intercambio&a=Seleccionar&id=<?= htmlspecialchars($libro->id_libro) ?>" class="btn btn-success btn-sm">
+                            <i class="bi bi-arrow-left-right me-2"></i> Intercambiar
+                          </a>
+                        <?php else: ?>
+                          <button class="btn btn-secondary btn-sm" type="button" disabled title="No disponible para intercambio">
+                            <i class="bi bi-slash-circle me-2"></i> No disponible
+                          </button>
+                        <?php endif; ?>
                       </div>
                     </div>
                   </div>

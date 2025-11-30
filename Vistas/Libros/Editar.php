@@ -10,7 +10,7 @@
               <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Usuario" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
             </div>
             <h5 class="fw-bold mb-1"><?php echo isset($_SESSION['nombre']) ? htmlspecialchars($_SESSION['nombre']) : 'Usuario'; ?></h5>
-            <p class="text-muted small mb-3"><?php echo isset($_SESSION['fecha_registro']) ? 'Miembro desde: '.date('Y', strtotime($_SESSION['fecha_registro'])) : 'Miembro desde: -'; ?></p>
+            <p class="text-muted small mb-3"><?php echo isset($_SESSION['fecha_registro']) ? 'Miembro desde: '.date('d/m/Y', strtotime($_SESSION['fecha_registro'])) : 'Miembro desde: -'; ?></p>
             
             <div class="d-grid gap-2">
               <a href="index.php?c=usuario&a=Editar" class="btn btn-outline-primary btn-sm">

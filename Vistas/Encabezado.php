@@ -7,6 +7,23 @@ if (session_status() === PHP_SESSION_NONE) {
 // Detectar controlador/acción actuales para marcar menú activo
 $currentController = isset($_GET['c']) ? strtolower($_GET['c']) : 'inicio';
 $currentAction = isset($_GET['a']) ? strtolower($_GET['a']) : 'principal';
+
+// Cargar notificaciones del almacenamiento JSON para el usuario actual
+$notifications = [];
+try {
+  $storePath = __DIR__ . '/../storage/notifications.json';
+  if (isset($_SESSION['id_usuario']) && file_exists($storePath)) {
+    $json = file_get_contents($storePath);
+    $all = json_decode($json, true) ?: [];
+    foreach ($all as $n) {
+      if (isset($n['destinatario']) && (int)$n['destinatario'] === (int)$_SESSION['id_usuario']) {
+        $notifications[] = $n;
+      }
+    }
+  }
+} catch (Exception $e) {
+  // Silenciar errores de lectura
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -46,49 +63,42 @@ $currentAction = isset($_GET['a']) ? strtolower($_GET['a']) : 'principal';
         </ul>
       </li>
       <!--Notification Menu-->
-      <li class="dropdown"><a class="app-nav__item" href="#" data-bs-toggle="dropdown" aria-label="Show notifications"><i class="bi bi-bell fs-5"></i></a>
+      <li class="dropdown"><a class="app-nav__item" href="#" data-bs-toggle="dropdown" aria-label="Show notifications"><i class="bi bi-bell fs-5"></i><?php if(!empty($notifications)) { ?><span class="badge bg-success ms-1"><?php echo count($notifications); ?></span><?php } ?></a>
         <ul class="app-notification dropdown-menu dropdown-menu-right">
-          <li class="app-notification__title">You have 4 new notifications.</li>
+          <li class="app-notification__title"><?php echo empty($notifications) ? 'No tienes notificaciones.' : ('Tienes ' . count($notifications) . ' notificaciones'); ?></li>
           <div class="app-notification__content">
-            <li><a class="app-notification__item" href="javascript:;"><span class="app-notification__icon"><i class="bi bi-envelope fs-4 text-primary"></i></span>
-                <div>
-                  <p class="app-notification__message">Lisa sent you a mail</p>
-                  <p class="app-notification__meta">2 min ago</p>
-                </div></a></li>
-            <li><a class="app-notification__item" href="javascript:;"><span class="app-notification__icon"><i class="bi bi-exclamation-triangle fs-4 text-warning"></i></span>
-                <div>
-                  <p class="app-notification__message">Mail server not working</p>
-                  <p class="app-notification__meta">5 min ago</p>
-                </div></a></li>
-            <li><a class="app-notification__item" href="javascript:;"><span class="app-notification__icon"><i class="bi bi-cash fs-4 text-success"></i></span>
-                <div>
-                  <p class="app-notification__message">Transaction complete</p>
-                  <p class="app-notification__meta">2 days ago</p>
-                </div></a></li>
-            <li><a class="app-notification__item" href="javascript:;"><span class="app-notification__icon"><i class="bi bi-envelope fs-4 text-primary"></i></span>
-                <div>
-                  <p class="app-notification__message">Lisa sent you a mail</p>
-                  <p class="app-notification__meta">2 min ago</p>
-                </div></a></li>
-            <li><a class="app-notification__item" href="javascript:;"><span class="app-notification__icon"><i class="bi bi-exclamation-triangle fs-4 text-warning"></i></span>
-                <div>
-                  <p class="app-notification__message">Mail server not working</p>
-                  <p class="app-notification__meta">5 min ago</p>
-                </div></a></li>
-            <li><a class="app-notification__item" href="javascript:;"><span class="app-notification__icon"><i class="bi bi-cash fs-4 text-success"></i></span>
-                <div>
-                  <p class="app-notification__message">Transaction complete</p>
-                  <p class="app-notification__meta">2 days ago</p>
-                </div></a></li>
+            <?php if (!empty($notifications)): ?>
+              <?php foreach ($notifications as $n): ?>
+                <?php 
+                  $link = '#';
+                  if (($n['tipo'] ?? '') === 'intercambio_solicitado') {
+                    $link = 'index.php?c=Intercambio&a=Revisar&id=' . urlencode($n['id']);
+                  } elseif (($n['tipo'] ?? '') === 'intercambio_aceptado' || ($n['tipo'] ?? '') === 'intercambio_rechazado') {
+                    $link = 'index.php?c=Libro&a=MisLibros';
+                  }
+                ?>
+                <li><a class="app-notification__item" href="<?= $link ?>">
+                  <span class="app-notification__icon"><i class="bi bi-arrow-left-right fs-4 text-primary"></i></span>
+                  <div>
+                    <p class="app-notification__message"><?php echo htmlspecialchars($n['mensaje']); ?></p>
+                    <p class="app-notification__meta"><?php echo date('d/m/Y H:i', strtotime($n['fecha'])); ?></p>
+                  </div></a>
+                </li>
+              <?php endforeach; ?>
+            <?php endif; ?>
           </div>
-          <li class="app-notification__footer"><a href="#">See all notifications.</a></li>
+          <li class="app-notification__footer">
+            <form action="index.php?c=Notificaciones&a=Limpiar" method="post" style="padding: 8px;">
+              <button type="submit" class="btn btn-sm btn-outline-danger w-100" <?php echo empty($notifications) ? 'disabled' : ''; ?>>Limpiar notificaciones</button>
+            </form>
+          </li>
         </ul>
       </li>
       <!-- User Menu-->
       <li class="dropdown"><a class="app-nav__item" href="#" data-bs-toggle="dropdown" aria-label="Open Profile Menu"><i class="bi bi-person fs-4"></i></a>
         <ul class="dropdown-menu settings-menu dropdown-menu-right">
           <li><a class="dropdown-item" href="page-user.html"><i class="bi bi-gear me-2 fs-5"></i> Settings</a></li>
-          <li><a class="dropdown-item" href="page-user.html"><i class="bi bi-person me-2 fs-5"></i> Profile</a></li>
+          <li><a class="dropdown-item" href="index.php?c=usuario&a=Perfil"><i class="bi bi-person me-2 fs-5"></i> Perfil</a></li>
          <li><a class="dropdown-item" href="index.php?c=usuario&a=Logout"><i class="bi bi-box-arrow-right me-2 fs-5"></i> Logout</a></li>
         </ul>
       </li>
@@ -118,10 +128,9 @@ $currentAction = isset($_GET['a']) ? strtolower($_GET['a']) : 'principal';
           <li><a class="treeview-item" href="form-samples.html"><i class="icon bi bi-circle-fill"></i> Form Samples</a></li>
         </ul>
       </li>
-      <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon bi bi-table"></i><span class="app-menu__label">Tables</span><i class="treeview-indicator bi bi-chevron-right"></i></a>
+      <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon bi bi-person"></i><span class="app-menu__label">Usuario</span><i class="treeview-indicator bi bi-chevron-right"></i></a>
         <ul class="treeview-menu">
-          <li><a class="treeview-item" href="table-basic.html"><i class="icon bi bi-circle-fill"></i> Basic Tables</a></li>
-          <li><a class="treeview-item" href="table-data-table.html"><i class="icon bi bi-circle-fill"></i> Data Tables</a></li>
+          <li><a class="treeview-item <?php echo ($currentController === 'usuario' && $currentAction === 'perfil') ? 'active' : ''; ?>" href="index.php?c=usuario&a=Perfil"><i class="icon bi bi-circle-fill"></i> Perfil</a></li>
         </ul>
       </li>
       <li class="treeview <?php echo ($currentController === 'page' || $currentController === 'pages' || $currentController === 'usuario') ? 'is-expanded' : ''; ?>"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon bi bi-file-earmark"></i><span class="app-menu__label">Pages</span><i class="treeview-indicator bi bi-chevron-right"></i></a>

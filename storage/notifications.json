@@ -1,0 +1,50 @@
+[
+    {
+        "id": "n692b3396494621.56104225",
+        "destinatario": 4,
+        "remitente": 3,
+        "tipo": "intercambio_solicitado",
+        "titulo": "Solicitud de intercambio",
+        "mensaje": "El usuario correo2 quiere intercambiar su libro \"Harry Poter\" por tu \"Dune\".",
+        "fecha": "2025-11-29T18:55:34+01:00",
+        "leida": true,
+        "libro_ofrecido": 5,
+        "libro_solicitado": 6,
+        "estado": "aceptado"
+    },
+    {
+        "id": "n692caa81a17693.52694277",
+        "destinatario": 4,
+        "remitente": 3,
+        "tipo": "intercambio_solicitado",
+        "titulo": "Solicitud de intercambio",
+        "mensaje": "El usuario correo2 quiere intercambiar su libro \"Harry Poter\" por tu \"Dune\".",
+        "fecha": "2025-11-30T21:35:13+01:00",
+        "leida": false,
+        "libro_ofrecido": 5,
+        "libro_solicitado": 6
+    },
+    {
+        "id": "n692cb100f25718.00248575",
+        "destinatario": 4,
+        "remitente": 3,
+        "tipo": "intercambio_solicitado",
+        "titulo": "Solicitud de intercambio",
+        "mensaje": "El usuario correo2 quiere intercambiar su libro \"Harry Poter\" por tu \"Dune\".",
+        "fecha": "2025-11-30T22:02:56+01:00",
+        "leida": true,
+        "libro_ofrecido": 5,
+        "libro_solicitado": 6,
+        "estado": "aceptado"
+    },
+    {
+        "id": "n692cb16c5fbc45.57449963",
+        "destinatario": 3,
+        "remitente": 4,
+        "tipo": "intercambio_aceptado",
+        "titulo": "Intercambio aceptado",
+        "mensaje": "Tu intercambio fue ACEPTADO: \"Harry Poter\" por \"Dune\".",
+        "fecha": "2025-11-30T22:04:44+01:00",
+        "leida": false
+    }
+]
