@@ -209,4 +209,15 @@ class Libro {
             die($e->getMessage());
         }
     }
+
+    // Actualizar únicamente el estado de un libro por su ID
+    public function ActualizarEstado($id_libro, $estado) {
+        try {
+            $estado = strtoupper(trim($estado));
+            $stmt = $this->pdo->prepare("UPDATE libro SET estado = ? WHERE id_libro = ?");
+            return $stmt->execute([$estado, $id_libro]);
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+    }
 }

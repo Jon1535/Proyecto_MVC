@@ -10,7 +10,7 @@
                   <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Usuario" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
                 </div>
                 <h5 class="fw-bold mb-1"><?php echo isset($_SESSION['nombre']) ? htmlspecialchars($_SESSION['nombre']) : 'Usuario'; ?></h5>
-                <p class="text-muted small mb-3"><?php echo isset($_SESSION['fecha_registro']) ? 'Miembro desde: '.date('Y', strtotime($_SESSION['fecha_registro'])) : 'Miembro desde: -'; ?></p>
+                <p class="text-muted small mb-3"><?php echo isset($_SESSION['fecha_registro']) ? 'Miembro desde: '.date('d/m/Y', strtotime($_SESSION['fecha_registro'])) : 'Miembro desde: -'; ?></p>
                 
                 <div class="d-grid gap-2">
                   <a href="index.php?c=usuario&a=Editar" class="btn btn-outline-primary btn-sm">
@@ -138,9 +138,9 @@
               </form>
             </div>
 
-            <!-- � Libros agregados recientemente -->
+            <!-- 📘 Libros agregados recientemente -->
             <div class="card shadow-sm p-4">
-              <h5 class="fw-bold mb-4">� Mis libros</h5>
+              <h5 class="fw-bold mb-4">📘 Mis libros</h5>
 
               <?php if (empty($libros)): ?>
                 <div class="alert alert-info">
@@ -161,18 +161,28 @@
                           <h6 class="fw-bold mb-1"><?php echo htmlspecialchars($libro->titulo); ?></h6>
                           <p class="text-muted small mb-2"><?php echo htmlspecialchars($libro->autor); ?></p>
                           
-                          <!-- Badge de condición -->
-                          <?php 
-                          $badgeClass = 'bg-success';
-                          if ($libro->condicion === 'COMO NUEVO') {
-                              $badgeClass = 'bg-success';
-                          } elseif ($libro->condicion === 'USADO') {
-                              $badgeClass = 'bg-warning text-dark';
-                          } elseif ($libro->condicion === 'DETERIORADO') {
-                              $badgeClass = 'bg-danger';
-                          }
-                          ?>
-                          <span class="badge <?php echo $badgeClass; ?> mb-3"><?php echo htmlspecialchars($libro->condicion); ?></span>
+                            <!-- Badges de condición y estado -->
+                            <?php 
+                            $badgeCond = 'bg-success';
+                            if ($libro->condicion === 'COMO NUEVO') {
+                              $badgeCond = 'bg-success';
+                            } elseif ($libro->condicion === 'USADO') {
+                              $badgeCond = 'bg-warning text-dark';
+                            } elseif ($libro->condicion === 'DETERIORADO') {
+                              $badgeCond = 'bg-danger';
+                            }
+                            $estado = strtoupper(trim($libro->estado ?? 'PUBLICADO'));
+                            $badgeEstado = 'bg-success';
+                            if ($estado === 'OBSERVADO') {
+                              $badgeEstado = 'bg-warning text-dark';
+                            } elseif ($estado === 'ACORDADO') {
+                              $badgeEstado = 'bg-info text-dark';
+                            }
+                            ?>
+                            <div class="d-flex justify-content-center gap-2 mb-3 flex-wrap">
+                            <span class="badge <?php echo $badgeCond; ?>"><?php echo htmlspecialchars($libro->condicion); ?></span>
+                            <span class="badge <?php echo $badgeEstado; ?>"><?php echo htmlspecialchars($estado); ?></span>
+                            </div>
                           <br>
                           <div class="d-flex gap-2 mt-3">
                             <a href="?c=Libro&a=Editar&id=<?php echo htmlspecialchars($libro->id_libro); ?>" class="btn btn-outline-primary btn-sm w-100">
