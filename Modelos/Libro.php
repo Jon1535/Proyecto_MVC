@@ -108,7 +108,7 @@ class Libro {
             $consulta->execute();
             return $resultado = $consulta->fetch(PDO::FETCH_OBJ);
         } catch (Exception $e) {
-            die($e->getMessage());
+            throw $e;
         }
     }
 
@@ -118,7 +118,7 @@ class Libro {
             $consulta->execute();
             return $consulta->fetchAll(PDO::FETCH_OBJ);
         } catch (Exception $e) {
-            die($e->getMessage());
+            throw $e;
         }
     }
 
@@ -128,7 +128,7 @@ class Libro {
             $consulta->execute(array($id_propietario));
             return $consulta->fetchAll(PDO::FETCH_OBJ);
         } catch (Exception $e) {
-            die($e->getMessage());
+            throw $e;
         }
     }
 
@@ -153,7 +153,7 @@ class Libro {
         return $lastId;
 
         } catch (Exception $e) {
-            die($e->getMessage());
+            throw $e;
         }
     }
 
@@ -176,7 +176,7 @@ class Libro {
             
             return true;
         } catch (Exception $e) {
-            die($e->getMessage());
+            throw $e;
         }
     }
 
@@ -186,7 +186,7 @@ class Libro {
             $consulta->execute(array($id));
             return $consulta->fetch(PDO::FETCH_OBJ);
         } catch (Exception $e) {
-            die($e->getMessage());
+            throw $e;
         }
     }
 
@@ -206,7 +206,7 @@ class Libro {
             return $del->execute(array($id_libro));
 
         } catch (Exception $e) {
-            die($e->getMessage());
+            throw $e;
         }
     }
 
@@ -217,7 +217,7 @@ class Libro {
             $stmt = $this->pdo->prepare("UPDATE libro SET estado = ? WHERE id_libro = ?");
             return $stmt->execute([$estado, $id_libro]);
         } catch (Exception $e) {
-            die($e->getMessage());
+            throw $e;
         }
     }
 }

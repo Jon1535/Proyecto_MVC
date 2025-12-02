@@ -11,7 +11,13 @@ $currentAction = isset($_GET['a']) ? strtolower($_GET['a']) : 'principal';
 // Cargar notificaciones del almacenamiento JSON para el usuario actual
 $notifications = [];
 try {
-  $storePath = __DIR__ . '/../storage/notifications.json';
+  $storePath = __DIR__ . '/../almacenamiento/notificaciones.json';
+  if (!file_exists($storePath)) {
+    $old1 = __DIR__ . '/../almacenamiento/notifications.json';
+    $old2 = __DIR__ . '/../storage/notifications.json';
+    if (file_exists($old1)) { $storePath = $old1; }
+    elseif (file_exists($old2)) { $storePath = $old2; }
+  }
   if (isset($_SESSION['id_usuario']) && file_exists($storePath)) {
     $json = file_get_contents($storePath);
     $all = json_decode($json, true) ?: [];
@@ -74,7 +80,28 @@ try {
                   if (($n['tipo'] ?? '') === 'intercambio_solicitado') {
                     $link = 'index.php?c=Intercambio&a=Revisar&id=' . urlencode($n['id']);
                   } elseif (($n['tipo'] ?? '') === 'intercambio_aceptado' || ($n['tipo'] ?? '') === 'intercambio_rechazado') {
-                    $link = 'index.php?c=Libro&a=MisLibros';
+                    $link = 'index.php?c=Libro&a=Biblioteca';
+                  } elseif (($n['tipo'] ?? '') === 'intercambio_programado' || ($n['tipo'] ?? '') === 'intercambio_confirmado' || ($n['tipo'] ?? '') === 'intercambio_rechazado') {
+                    if (!empty($n['intercambio_id'])) {
+                      $link = 'index.php?c=Intercambio&a=Ver&id=' . urlencode($n['intercambio_id']);
+                    } else {
+                      $link = 'index.php?c=Libro&a=Biblioteca';
+                    }
+                  } elseif (($n['tipo'] ?? '') === 'entrega_propuesta' || ($n['tipo'] ?? '') === 'entrega_confirmada' || ($n['tipo'] ?? '') === 'entrega_rechazada') {
+                    // Compatibilidad hacia atrás: si llega una notificación antigua de entrega, intentar redirigir al intercambio
+                    if (!empty($n['intercambio_id'])) {
+                      $link = 'index.php?c=Intercambio&a=Ver&id=' . urlencode($n['intercambio_id']);
+                    } else {
+                      $link = 'index.php?c=Libro&a=Biblioteca';
+                    }
+                  } elseif (($n['tipo'] ?? '') === 'valoracion_pendiente') {
+                    if (!empty($n['intercambio_id'])) {
+                      $link = 'index.php?c=Valoracion&a=Crear&intercambio=' . urlencode($n['intercambio_id']);
+                    } else {
+                      $link = 'index.php?c=Libro&a=Biblioteca';
+                    }
+                  } elseif (($n['tipo'] ?? '') === 'valoracion_recibida') {
+                    $link = 'index.php?c=usuario&a=Perfil';
                   }
                 ?>
                 <li><a class="app-notification__item" href="<?= $link ?>">
@@ -118,7 +145,7 @@ try {
       <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon bi bi-laptop"></i><span class="app-menu__label">Libros</span><i class="treeview-indicator bi bi-chevron-right"></i></a>
         <ul class="treeview-menu">
           <li><a class="treeview-item" href="?c=Libro"><i class="icon bi bi-circle-fill"></i> Listar Todos</a></li>
-          <li><a class="treeview-item" href="?c=Libro&a=MisLibros"><i class="icon bi bi-circle-fill"></i> Mis Libros</a></li>
+          <li><a class="treeview-item" href="?c=Libro&a=Biblioteca"><i class="icon bi bi-circle-fill"></i> Biblioteca</a></li>
           <li><a class="treeview-item" href="?c=Libro&a=Crear"><i class="icon bi bi-circle-fill"></i> Crear</a></li>
         </ul>
       </li>
@@ -184,7 +211,7 @@ try {
           li.setAttribute('data-id', item.id);
           
           li.addEventListener('click', function() {
-            window.location.href = '?c=Libro&a=MisLibros&buscar=' + encodeURIComponent(item.titulo);
+            window.location.href = '?c=Libro&a=Biblioteca&buscar=' + encodeURIComponent(item.titulo);
           });
 
           li.addEventListener('mouseenter', function() {

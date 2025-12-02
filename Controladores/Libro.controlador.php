@@ -45,7 +45,7 @@ class LibroControlador {
         require_once "Vistas/Pie.php"; // Incluir el pie de página  
     }
 
-    public function MisLibros() {
+    public function Biblioteca() {
         // Verificar que el usuario esté autenticado
         if (!isset($_SESSION['id_usuario'])) {
             header('Location: index.php?c=usuario&a=Login');
@@ -64,11 +64,21 @@ class LibroControlador {
         }
         
         require_once "Vistas/Encabezado.php"; // Incluir el encabezado
-        require_once "Vistas/Libros/MisLibros.php"; // Incluir la vista de "Biblioteca"
+        require_once "Vistas/Libros/Biblioteca.php"; // Incluir la vista de "Biblioteca"
         require_once "Vistas/Pie.php"; // Incluir el pie de página  
+    }
+
+    // Alias de compatibilidad para rutas antiguas
+    public function MisLibros() {
+        return $this->Biblioteca();
     }
     
     public function FormCrear() {
+        // Verificar que el usuario esté autenticado
+        if (!isset($_SESSION['id_usuario'])) {
+            header('Location: index.php?c=usuario&a=Login');
+            exit;
+        }
         // Obtener libros del usuario autenticado si está logueado
         $libros = [];
         if (isset($_SESSION['id_usuario'])) {

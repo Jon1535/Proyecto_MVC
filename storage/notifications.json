@@ -1,50 +1,38 @@
 [
     {
-        "id": "n692b3396494621.56104225",
+        "id": "n692cc4913f70d3.98115725",
         "destinatario": 4,
         "remitente": 3,
         "tipo": "intercambio_solicitado",
         "titulo": "Solicitud de intercambio",
-        "mensaje": "El usuario correo2 quiere intercambiar su libro \"Harry Poter\" por tu \"Dune\".",
-        "fecha": "2025-11-29T18:55:34+01:00",
+        "mensaje": "El usuario correo2 quiere intercambiar su libro \"Libro 6\" por tu \"Libro 5\".",
+        "fecha": "2025-11-30T23:26:25+01:00",
         "leida": true,
-        "libro_ofrecido": 5,
-        "libro_solicitado": 6,
+        "libro_ofrecido": 8,
+        "libro_solicitado": 7,
         "estado": "aceptado"
     },
     {
-        "id": "n692caa81a17693.52694277",
-        "destinatario": 4,
+        "id": "n692cc6b569c622.47646883",
+        "destinatario": 1,
         "remitente": 3,
         "tipo": "intercambio_solicitado",
         "titulo": "Solicitud de intercambio",
-        "mensaje": "El usuario correo2 quiere intercambiar su libro \"Harry Poter\" por tu \"Dune\".",
-        "fecha": "2025-11-30T21:35:13+01:00",
+        "mensaje": "El usuario correo2 quiere intercambiar su libro \"Libro7\" por tu \"El Principito\".",
+        "fecha": "2025-11-30T23:35:33+01:00",
         "leida": false,
-        "libro_ofrecido": 5,
-        "libro_solicitado": 6
+        "libro_ofrecido": 9,
+        "libro_solicitado": 3
     },
     {
-        "id": "n692cb100f25718.00248575",
+        "id": "n692ccbd3616ea1.44200115",
         "destinatario": 4,
         "remitente": 3,
-        "tipo": "intercambio_solicitado",
-        "titulo": "Solicitud de intercambio",
-        "mensaje": "El usuario correo2 quiere intercambiar su libro \"Harry Poter\" por tu \"Dune\".",
-        "fecha": "2025-11-30T22:02:56+01:00",
-        "leida": true,
-        "libro_ofrecido": 5,
-        "libro_solicitado": 6,
-        "estado": "aceptado"
-    },
-    {
-        "id": "n692cb16c5fbc45.57449963",
-        "destinatario": 3,
-        "remitente": 4,
-        "tipo": "intercambio_aceptado",
-        "titulo": "Intercambio aceptado",
-        "mensaje": "Tu intercambio fue ACEPTADO: \"Harry Poter\" por \"Dune\".",
-        "fecha": "2025-11-30T22:04:44+01:00",
-        "leida": false
+        "tipo": "entrega_confirmada",
+        "titulo": "Entrega confirmada",
+        "mensaje": "La propuesta de entrega fue confirmada.",
+        "fecha": "2025-11-30T23:57:23+01:00",
+        "leida": false,
+        "entrega_id": 1
     }
 ]

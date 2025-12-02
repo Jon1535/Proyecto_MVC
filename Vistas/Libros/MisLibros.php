@@ -38,6 +38,13 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
               </div>
             <?php endif; ?>
+            <?php if (isset($_GET['success']) && $_GET['success'] === 'solicitud'): ?>
+              <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle me-2"></i>
+                Solicitud de intercambio enviada correctamente.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            <?php endif; ?>
             <?php 
             $buscar = isset($_GET['buscar']) ? trim($_GET['buscar']) : '';
             if (!empty($buscar)): 

@@ -49,6 +49,15 @@
                 <span>Email</span><span class="fw-semibold"><?php echo htmlspecialchars($usuario->email); ?></span>
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>Reputación</span>
+                <span class="fw-semibold">
+                  <?php 
+                    $rep = isset($usuario->reputacion_promedio) ? (float)$usuario->reputacion_promedio : 0;
+                    echo number_format($rep, 2);
+                  ?> / 5.00
+                </span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
                 <span>Fecha registro</span><span class="fw-semibold"><?php echo $usuario->fecha_registro ? date('d/m/Y H:i', strtotime($usuario->fecha_registro)) : '-'; ?></span>
               </li>
             </ul>

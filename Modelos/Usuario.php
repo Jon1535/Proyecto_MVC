@@ -51,33 +51,33 @@ class Usuario {
     // Listar todos los usuarios
     public function Listar() {
         try {
-            $stmt = $this->pdo->prepare("SELECT id_usuario, nombre, email, pass_hash, fecha_registro, estado FROM usuario");
+            $stmt = $this->pdo->prepare("SELECT id_usuario, nombre, email, pass_hash, fecha_registro, estado, reputacion_promedio FROM usuario");
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_OBJ);
         } catch (Exception $e) {
-            die($e->getMessage());
+            throw $e;
         }
     }
 
     // Obtener usuario por id
     public function Obtener($id) {
         try {
-            $stmt = $this->pdo->prepare("SELECT id_usuario, nombre, email, pass_hash, fecha_registro, estado FROM usuario WHERE id_usuario = ?");
+            $stmt = $this->pdo->prepare("SELECT id_usuario, nombre, email, pass_hash, fecha_registro, estado, reputacion_promedio FROM usuario WHERE id_usuario = ?");
             $stmt->execute([$id]);
             return $stmt->fetch(PDO::FETCH_OBJ);
         } catch (Exception $e) {
-            die($e->getMessage());
+            throw $e;
         }
     }
 
     // Obtener usuario por email
     public function ObtenerPorEmail($email) {
         try {
-            $stmt = $this->pdo->prepare("SELECT id_usuario, nombre, email, pass_hash, fecha_registro, estado FROM usuario WHERE email = ? LIMIT 1");
+            $stmt = $this->pdo->prepare("SELECT id_usuario, nombre, email, pass_hash, fecha_registro, estado, reputacion_promedio FROM usuario WHERE email = ? LIMIT 1");
             $stmt->execute([$email]);
             return $stmt->fetch(PDO::FETCH_OBJ);
         } catch (Exception $e) {
-            die($e->getMessage());
+            throw $e;
         }
     }
 
@@ -95,7 +95,7 @@ class Usuario {
             ]);
             return $this->pdo->lastInsertId();
         } catch (Exception $e) {
-            die($e->getMessage());
+            throw $e;
         }
     }
 
@@ -118,7 +118,7 @@ class Usuario {
             $stmt = $this->pdo->prepare($sql);
             return $stmt->execute($params);
         } catch (Exception $e) {
-            die($e->getMessage());
+            throw $e;
         }
     }
 
@@ -128,7 +128,7 @@ class Usuario {
             $stmt = $this->pdo->prepare("DELETE FROM usuario WHERE id_usuario = ?");
             return $stmt->execute([$id]);
         } catch (Exception $e) {
-            die($e->getMessage());
+            throw $e;
         }
     }
 
@@ -143,7 +143,17 @@ class Usuario {
             }
             return false;
         } catch (Exception $e) {
-            die($e->getMessage());
+            throw $e;
+        }
+    }
+
+    // Actualiza la reputación promedio del usuario (valor directo 1..5)
+    public function ActualizarReputacion($idUsuario, $puntuacion) {
+        try {
+            $stmt = $this->pdo->prepare("UPDATE usuario SET reputacion_promedio = ? WHERE id_usuario = ?");
+            return $stmt->execute([$puntuacion, $idUsuario]);
+        } catch (Exception $e) {
+            throw $e;
         }
     }
 

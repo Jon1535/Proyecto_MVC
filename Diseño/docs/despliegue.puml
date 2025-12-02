@@ -1,0 +1,80 @@
+@startuml
+' Diagrama de Despliegue — Proyecto_MVC
+' Inspirado en el ejemplo adjunto (nodos físicos, conexiones, artefactos)
+
+skinparam shadowing false
+skinparam defaultFontName Ubuntu
+skinparam packageStyle rectangle
+skinparam componentStyle rectangle
+skinparam ArrowColor #444
+skinparam NodeBorderColor #666
+skinparam NodeBackgroundColor #FDFDFD
+skinparam BoxPadding 8
+
+title Despliegue — Proyecto_MVC (Web PHP MVC)
+
+actor "Usuario" as user
+
+node "Workstation" as workstation {
+  artifact "Web browser" as browser
+}
+
+node "Dispositivo móvil" as mobile {
+  artifact "Navegador móvil" as m_browser
+}
+
+cloud "Internet / LAN" as net
+
+node "Web Server" as web {
+  node "Apache + PHP (XAMPP/LAMPP)" as runtime {
+    artifact "Presentación (Vistas)" as a_views
+    artifact "Controladores" as a_ctrl
+    artifact "Modelos" as a_models
+    folder "Assets/" as a_assets
+    folder "almacenamiento/" as a_storage
+    file "notificaciones.json" as a_notif
+    folder "images/uploads/" as a_uploads
+  }
+}
+
+node "Database Server" as dbsrv {
+  database "MySQL (PDO)" as mysql
+}
+
+' Relaciones:
+user --> browser : Interacción
+browser --> net : HTTP/HTTPS
+m_browser --> net : HTTP/HTTPS
+net --> web : HTTP/HTTPS
+
+web --> mysql : TCP/IP (PDO)
+web --> a_storage : Lectura/Escritura
+web --> a_notif : JSON I/O
+web --> a_uploads : Subida de imágenes
+
+' Notas explicativas
+note right of web
+  Código PHP MVC desplegado en Apache.
+  Rutas y vistas en español (Biblioteca).
+  Manejo de errores con excepciones (throw).
+end note
+
+note bottom of mysql
+  Esquema MySQL con tablas de usuario, libro,
+  intercambio y valoración.
+end note
+
+' Opcional: hardware externo
+node "Escáner (opcional)" as scanner #EEEEEE {
+  artifact "Dispositivo TWAIN/WIA" as twain
+}
+scanner .. net : WiFi/LAN (si aplica)
+
+legend
+  == Convenciones ==
+  node: Recurso físico/virtual de ejecución
+  artifact/file/folder: Artefactos desplegados
+  Flechas: Protocolo principal (HTTP/HTTPS, TCP/IP)
+endlegend
+
+@enduml

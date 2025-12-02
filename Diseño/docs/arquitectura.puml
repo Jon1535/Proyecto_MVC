@@ -1,0 +1,78 @@
+@startuml 
+' Arquitectura MVC - Proyecto_MVC
+' Vista de componentes + infraestructura
+
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam monochrome false
+skinparam defaultFontName Ubuntu
+
+title Arquitectura MVC — Proyecto_MVC
+
+package "Presentación" {
+  [Vistas] as Vistas
+  component "Vistas/Inicio/Principal.php" as V_Principal
+  component "Vistas/Libros/Biblioteca.php" as V_Biblioteca
+  component "Vistas/Usuario/Login.php" as V_Login
+}
+
+package "Controladores" {
+  component "Inicio.controlador.php" as C_Inicio
+  component "Libro.controlador.php" as C_Libro
+  component "usuario.controlador.php" as C_Usuario
+  component "Intercambio.controlador.php" as C_Intercambio
+  component "Busqueda.controlador.php" as C_Busqueda
+}
+
+package "Modelos" {
+  component "Basededatos.php" as M_DB
+  component "Usuario.php" as M_Usuario
+  component "Libro.php" as M_Libro
+  component "Intercambio.php" as M_Intercambio
+  component "Valoracion.php" as M_Valoracion
+}
+
+package "Infraestructura" {
+  database "MySQL (PDO)" as DB
+  folder "almacenamiento" as FS
+  file "notificaciones.json" as Notif
+}
+
+' Enlaces Presentación → Controladores
+V_Principal -down-> C_Inicio : Renderiza inicio
+V_Biblioteca -down-> C_Libro : Listado/gestión libros
+V_Login -down-> C_Usuario : Autenticación
+
+' Enlaces Controladores → Modelos
+C_Libro --> M_Libro
+C_Usuario --> M_Usuario
+C_Intercambio --> M_Intercambio
+C_Busqueda --> M_Libro
+C_Inicio --> M_Libro
+
+' Modelos → DB/FS
+M_Libro --> M_DB
+M_Usuario --> M_DB
+M_Intercambio --> M_DB
+M_Valoracion --> M_DB
+
+C_Intercambio --> Notif : Escribe/lee notificaciones
+Notif -[hidden]-> FS
+DB -[hidden]-> M_DB
+
+' Notas de diseño relevantes
+note "Errores por excepciones (throw)\nNo se utiliza die() en modelos" as N_throw
+N_throw .. M_Libro
+N_throw .. M_Usuario
+N_throw .. M_Intercambio
+N_throw .. M_Valoracion
+
+note "Alias de compatibilidad:\nMisLibros() → Biblioteca()" as N_alias
+N_alias .. C_Libro
+
+' Posibles estados y conceptos clave
+rectangle "Libro: PUBLICADO/OBSERVADO/ACORDADO" as K_Estados
+K_Estados .. M_Libro
+
+@enduml

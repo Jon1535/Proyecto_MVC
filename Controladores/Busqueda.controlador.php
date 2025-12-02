@@ -59,12 +59,12 @@ class BusquedaControlador {
         $q = isset($_GET['q']) ? trim($_GET['q']) : '';
         
         if (empty($q)) {
-            header('Location: index.php?c=Libro&a=MisLibros');
+            header('Location: index.php?c=Libro&a=Biblioteca');
             exit;
         }
 
         // Redirigir a biblioteca con parámetro de búsqueda
-        header('Location: index.php?c=Libro&a=MisLibros&buscar=' . urlencode($q));
+        header('Location: index.php?c=Libro&a=Biblioteca&buscar=' . urlencode($q));
         exit;
     }
 }

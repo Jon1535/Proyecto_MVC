@@ -118,13 +118,8 @@ class UsuarioControlador {
             header('Location: index.php?c=usuario&a=Login');
             exit;
         }
-        // Datos básicos del usuario desde la sesión
-        $usuario = (object) [
-            'id_usuario' => $_SESSION['id_usuario'] ?? null,
-            'nombre' => $_SESSION['nombre'] ?? '',
-            'email' => $_SESSION['email'] ?? '',
-            'fecha_registro' => $_SESSION['fecha_registro'] ?? null,
-        ];
+        // Cargar datos actualizados desde BD (incluye reputación)
+        $usuario = $this->modelo->Obtener($_SESSION['id_usuario']);
         require_once "Vistas/Encabezado.php";
         require_once "Vistas/Usuario/Perfil.php";
         require_once "Vistas/Pie.php";

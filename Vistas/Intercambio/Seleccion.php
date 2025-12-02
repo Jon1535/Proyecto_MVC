@@ -68,7 +68,7 @@
     <!-- Acciones -->
     <div class="card shadow-sm mt-4">
       <div class="card-body p-4 d-flex justify-content-between">
-        <a href="index.php?c=Libro&a=MisLibros" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-2"></i>Volver</a>
+        <a href="index.php?c=Libro&a=Biblioteca" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-2"></i>Volver</a>
         <form method="POST" action="index.php?c=Intercambio&a=Confirmar" class="d-flex gap-2">
           <input type="hidden" name="id_libro_mio" id="id_libro_mio" value="">
           <input type="hidden" name="id_libro_solicitado" value="<?= htmlspecialchars($libroSolicitado->id_libro) ?>">

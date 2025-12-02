@@ -1,0 +1,15 @@
+[
+    {
+        "id": "e692cc8a4c64379.05125840",
+        "solicitud_id": "n692cc4913f70d3.98115725",
+        "solicitante_id": 3,
+        "destinatario_id": 4,
+        "creador_id": 4,
+        "tipo": "PUNTO_SEGURO",
+        "estado": "pendiente_confirmacion",
+        "fecha": "2025-11-30T23:43:48+01:00",
+        "notas": "aaaaa",
+        "punto_direccion": "asdadasd",
+        "fecha_hora": "2025-12-01T17:43"
+    }
+]
